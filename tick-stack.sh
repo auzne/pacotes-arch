@@ -5,12 +5,26 @@
 # para instalar grafana em vez de chronograf, execute o comando com o argumento grafana
 # exemplo: ./tick-stack.sh grafana
 
+checagem () {
+    existe=$(pacman -Qs $1)
+    if [ "$existe" = "" ]
+    then
+        return 0
+    else
+        return 1
+    fi
+}
+
 instalar () {
     pacote=$1
-    cd $pacote
-    makepkg --noconfirm --clean --install --syncdeps --rmdeps
-    cd ..
-    sudo rm -r $pacote
+    checagem $pacote
+    if [ $? -eq 0 ]
+    then
+        cd $pacote
+        makepkg --noconfirm --clean --install --syncdeps --rmdeps
+        cd ..
+        sudo rm -r $pacote
+    fi
 }
 
 chronograf () {

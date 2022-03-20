@@ -10,7 +10,7 @@ instalar () {
     cd $pacote
     makepkg --noconfirm --clean --install --syncdeps --rmdeps
     cd ..
-    rm -r $pacote
+    sudo rm -r $pacote
 }
 
 chronograf () {
@@ -30,8 +30,8 @@ if [ $(whoami) = "root" ]
 then
     echo "Você não pode realizar esta operação como root"
 else
-    # instala o git (para os pacotes no aur) e o influxdb
-    sudo pacman -Sy --needed --noconfirm git influxdb
+    # instala o git, fakeroot (para os pacotes no aur) e o influxdb
+    sudo pacman -Sy --needed --noconfirm git fakeroot influxdb
 
     # instala o telegraf
     git clone https://aur.archlinux.org/telegraf-bin.git telegraf

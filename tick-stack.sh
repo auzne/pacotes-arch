@@ -20,17 +20,19 @@ instalar () {
     checagem $pacote
     if [ $? -eq 0 ]
     then
+        git clone https://aur.archlinux.org/$pacote.git
         cd $pacote
         makepkg --noconfirm --clean --install --syncdeps --rmdeps
         cd ..
         sudo rm -r $pacote
+    else
+        echo "Ignorando pacote já instalado: $pacote"
     fi
 }
 
 chronograf () {
     # instala o chronograf
-    git clone https://aur.archlinux.org/chronograf-bin.git chronograf
-    instalar "chronograf"
+    instalar "chronograf-bin"
     sudo systemctl enable --now chronograf.service
 }
 
@@ -48,12 +50,10 @@ else
     sudo pacman -Sy --needed --noconfirm git fakeroot influxdb
 
     # instala o telegraf
-    git clone https://aur.archlinux.org/telegraf-bin.git telegraf
-    instalar "telegraf"
+    instalar "telegraf-bin"
 
     # instala o kapacitor
-    git clone https://aur.archlinux.org/kapacitor-bin.git kapacitor
-    instalar "kapacitor"
+    instalar "kapacitor-bin"
 
     # instala o grafana se foi pedido pelo usuario
     g=0

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Instala o TICK Stack
+# O pacote sudo é necessário
 # para instalar grafana em vez de chronograf, execute o comando com o argumento grafana
 # exemplo: ./tick-stack.sh grafana
 

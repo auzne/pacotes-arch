@@ -16,19 +16,21 @@ chronograf () {
     # instala o chronograf
     git clone https://aur.archlinux.org/chronograf-bin.git chronograf
     instalar "chronograf"
-    systemctl enable --now chronograf.service
+    sudo systemctl enable --now chronograf.service
 }
 
 grafana () {
     # instala o grafana
-    pacman -S --needed --noconfirm grafana
-    systemctl enable --now grafana.service
+    sudo pacman -S --needed --noconfirm grafana
+    sudo systemctl enable --now grafana.service
 }
 
 if [ $(whoami) = "root" ]
 then
+    echo "Você não pode realizar esta operação como root"
+else
     # instala o git (para os pacotes no aur) e o influxdb
-    pacman -Sy --needed --noconfirm git influxdb
+    sudo pacman -Sy --needed --noconfirm git influxdb
 
     # instala o telegraf
     git clone https://aur.archlinux.org/telegraf-bin.git telegraf
@@ -55,10 +57,7 @@ then
     fi
 
     # inicia os services
-    systemctl enable --now telegraf.service
-    systemctl enable --now influxdb.service
-    systemctl enable --now kapacitor.service
-
-else
-    echo "Você não pode realizar esta operação a menos que seja root"
+    sudo systemctl enable --now telegraf.service
+    sudo systemctl enable --now influxdb.service
+    sudo systemctl enable --now kapacitor.service
 fi

@@ -33,13 +33,11 @@ instalar () {
 chronograf () {
     # instala o chronograf
     instalar "chronograf-bin"
-    sudo systemctl enable --now chronograf.service
 }
 
 grafana () {
     # instala o grafana
     sudo pacman -S --needed --noconfirm grafana
-    sudo systemctl enable --now grafana.service
 }
 
 if [ $(whoami) = "root" ]
@@ -55,24 +53,35 @@ else
     # instala o kapacitor
     instalar "kapacitor-bin"
 
-    # instala o grafana se foi pedido pelo usuario
-    g=0
-    if [ $# -gt 0 ]
+    echo "Selecione um pacote para instalar"
+    echo "1) chronograf 2) grafana"
+    read -p "Digite um número (padrão=1): " corg
+
+    if [ $corg -eq 2 ]
     then
-        if [ $1 = "grafana" ]
+        grafana
+    else
+        if [ $corg -ne 1 ]
         then
-            g=1
-            grafana
+            echo "Instalando o pacote padrão"
         fi
-    fi
-    # instala o chronograf se o grafana nao foi instalado
-    if [ $g = 0 ]
-    then
         chronograf
     fi
 
-    # inicia os services
-    sudo systemctl enable --now telegraf.service
-    sudo systemctl enable --now influxdb.service
-    sudo systemctl enable --now kapacitor.service
+    echo "Deseja ativar os serviços dos pacotes baixados? [S/n]"
+    read iniciar
+
+    if [ $iniciar = "S" ] || [ $iniciar = "s" ]
+    then
+        # inicia os services
+        sudo systemctl enable --now telegraf.service
+        sudo systemctl enable --now influxdb.service
+        sudo systemctl enable --now kapacitor.service
+        if [ $corg -eq 2 ]
+        then
+            sudo systemctl enable --now grafana.service
+        else
+            sudo systemctl enable --now chronograf.service
+        fi
+    fi
 fi

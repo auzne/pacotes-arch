@@ -37,17 +37,17 @@ else
     echo "2) código fonte"      # é necessário compilar
     read -p "Digite um número (padrão=1): " tipo
 
-    $telegraf="telegraf"
-    $kapacitor="kapacitor"
-    $chronograf="chronograf"
+    telegraf="telegraf"
+    kapacitor="kapacitor"
+    chronograf="chronograf"
     if [ "$tipo" = "2" ]
     then
         # dependencias de compilação
-        pacman -S --needed --noconfirm go gcc
+        sudo pacman -S --needed --noconfirm go gcc
     else
-        $telegraf="$telegraf-bin"
-        $kapacitor="$kapacitor-bin"
-        $chronograf="$chronograf-bin"
+        telegraf="$telegraf-bin"
+        kapacitor="$kapacitor-bin"
+        chronograf="$chronograf-bin"
     fi
 
     # instala o git, fakeroot (para os pacotes no aur) e o influxdb

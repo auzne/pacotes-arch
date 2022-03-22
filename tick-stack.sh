@@ -28,28 +28,36 @@ instalar () {
     fi
 }
 
-chronograf () {
-    # instala o chronograf
-    instalar "chronograf-bin"
-}
-
-grafana () {
-    # instala o grafana
-    sudo pacman -S --needed --noconfirm grafana
-}
-
 if [ $(whoami) = "root" ]
 then
     echo "Você não pode realizar esta operação como root"
 else
+    echo "Selecione o tipo dos pacotes a serem instalados"
+    echo "1) versão binária"    # não há necessidade de compilar
+    echo "2) código fonte"      # é necessário compilar
+    read -p "Digite um número (padrão=1): " tipo
+
+    $telegraf="telegraf"
+    $kapacitor="kapacitor"
+    $chronograf="chronograf"
+    if [ "$tipo" = "2" ]
+    then
+        # dependencias de compilação
+        pacman -S --needed --noconfirm go gcc
+    else
+        $telegraf="$telegraf-bin"
+        $kapacitor="$kapacitor-bin"
+        $chronograf="$chronograf-bin"
+    fi
+
     # instala o git, fakeroot (para os pacotes no aur) e o influxdb
     sudo pacman -Sy --needed --noconfirm git fakeroot influxdb
 
     # instala o telegraf
-    instalar "telegraf-bin"
+    instalar $telegraf
 
     # instala o kapacitor
-    instalar "kapacitor-bin"
+    instalar $kapacitor
 
     echo
     echo "Selecione um pacote para instalar"
@@ -59,25 +67,27 @@ else
 
     if [ "$corg" = "2" ]
     then
-        grafana
+        # instala o grafana
+        sudo pacman -S --needed --noconfirm grafana
     else
+        # instala o chronograf
         if [ "$corg" != "1" ]
         then
             echo "Instalando o pacote padrão"
         fi
-        chronograf
+        instalar $chronograf
     fi
 
-    echo "Deseja ativar os serviços dos pacotes baixados? [S/n]"
+    echo "Deseja ativar os serviços dos pacotes instalados? [S/n]"
     read iniciar
 
-    if [ $iniciar = "S" ] || [ $iniciar = "s" ]
+    if [ "$iniciar" = "S" ] || [ "$iniciar" = "s" ]
     then
         # inicia os services
         sudo systemctl enable telegraf.service
         sudo systemctl enable influxdb.service
         sudo systemctl enable kapacitor.service
-        if [ $corg -eq 2 ]
+        if [ "$corg" = "2" ]
         then
             sudo systemctl enable grafana.service
         else

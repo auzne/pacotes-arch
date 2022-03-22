@@ -2,8 +2,6 @@
 
 # Instala o TICK Stack
 # O pacote sudo é necessário
-# para instalar grafana em vez de chronograf, execute o comando com o argumento grafana
-# exemplo: ./tick-stack.sh grafana
 
 checagem () {
     existe=$(pacman -Qs $1)
@@ -74,14 +72,15 @@ else
     if [ $iniciar = "S" ] || [ $iniciar = "s" ]
     then
         # inicia os services
-        sudo systemctl enable --now telegraf.service
-        sudo systemctl enable --now influxdb.service
-        sudo systemctl enable --now kapacitor.service
+        sudo systemctl enable telegraf.service
+        sudo systemctl enable influxdb.service
+        sudo systemctl enable kapacitor.service
         if [ $corg -eq 2 ]
         then
-            sudo systemctl enable --now grafana.service
+            sudo systemctl enable grafana.service
         else
-            sudo systemctl enable --now chronograf.service
+            sudo systemctl enable chronograf.service
         fi
+        echo "Reinicia o sistema para iniciar os serviços."
     fi
 fi

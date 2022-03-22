@@ -10,4 +10,4 @@ sudo systemctl set-default graphical.target
 # ativa o gdm
 sudo systemctl enable gdm
 # reinicia o sistema
-sudo restart
+sudo reboot

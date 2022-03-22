@@ -51,15 +51,17 @@ else
     # instala o kapacitor
     instalar "kapacitor-bin"
 
+    echo
     echo "Selecione um pacote para instalar"
-    echo "1) chronograf 2) grafana"
+    echo "1) chronograf"
+    echo "2) grafana"
     read -p "Digite um número (padrão=1): " corg
 
-    if [ $corg -eq 2 ]
+    if [ "$corg" = "2" ]
     then
         grafana
     else
-        if [ $corg -ne 1 ]
+        if [ "$corg" != "1" ]
         then
             echo "Instalando o pacote padrão"
         fi

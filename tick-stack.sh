@@ -33,31 +33,32 @@ then
     echo "Você não pode realizar esta operação como root"
 else
     echo "Selecione o tipo dos pacotes a serem instalados"
-    echo "1) versão binária"    # não há necessidade de compilar
-    echo "2) código fonte"      # é necessário compilar
+    echo "1) versão binária"
+    echo "2) código fonte"
     read -p "Digite um número (padrão=1): " tipo
-
-    telegraf="telegraf"
-    kapacitor="kapacitor"
-    chronograf="chronograf"
-    if [ "$tipo" = "2" ]
-    then
-        # dependencias de compilação
-        sudo pacman -S --needed --noconfirm go gcc
-    else
-        telegraf="$telegraf-bin"
-        kapacitor="$kapacitor-bin"
-        chronograf="$chronograf-bin"
-    fi
 
     # instala o git, fakeroot (para os pacotes no aur) e o influxdb
     sudo pacman -Sy --needed --noconfirm git fakeroot influxdb
+
+    # os pacotes kapacitor e chronograf no aur estão desatualizados
+    # em comparação com o estado atual do programa
+    # enquanto isso, kapacitor-bin e chronograf-bin estão atualizados.
+    # por isso, somente o telegraf vai ser compilado quando a opção
+    # de código fonte for requisitada
+    telegraf="telegraf"
+    if [ "$tipo" = "2" ]
+    then
+        # dependencias de compilação
+        sudo pacman -S --needed --noconfirm go gcc glibc
+    else
+        telegraf="telegraf-bin"
+    fi
 
     # instala o telegraf
     instalar $telegraf
 
     # instala o kapacitor
-    instalar $kapacitor
+    instalar "kapacitor-bin"
 
     echo
     echo "Selecione um pacote para instalar"
@@ -75,7 +76,7 @@ else
         then
             echo "Instalando o pacote padrão"
         fi
-        instalar $chronograf
+        instalar "chronograf-bin"
     fi
 
     echo "Deseja ativar os serviços dos pacotes instalados? [S/n]"
@@ -93,6 +94,8 @@ else
         else
             sudo systemctl enable chronograf.service
         fi
-        echo "Reinicia o sistema para iniciar os serviços."
+        echo "Reinicie o sistema para iniciar os serviços."
+    else
+        echo "Inicie os serviços utilizando `systemctl`."
     fi
 fi

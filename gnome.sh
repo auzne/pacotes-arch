@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Instala o gnome
 # O pacote sudo é necessário

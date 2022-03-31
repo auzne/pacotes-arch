@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Instala o TICK Stack
 # O pacote sudo é necessário

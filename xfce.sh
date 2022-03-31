@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-# Instala o gnome
+# Instala o xfce
 # O pacote sudo é necessário
 
 # instala os pacotes
